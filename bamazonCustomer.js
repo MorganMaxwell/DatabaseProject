@@ -28,17 +28,14 @@ function interaction(res) {
     inquirer.prompt(questions)
         .then(function (ans) {
             if (res[ans.ProductPick - 1].stock_quantity - ans.Quantity < 0) {
-                console.log("Insufficient quantities!");
+                console.log("\nInsufficient quantities! Please pick another product.\n");
+                interaction(res);
             }
             else {
                 var newQuantity = res[ans.ProductPick - 1].stock_quantity - ans.Quantity;
                 connection.query(
-                    'UPDATE products SET stock_quantity = ?', {
-                        newQuantity: newQuantity
-                    },
-                    'WHERE id = ?', {
-                        product: ans.ProductPick
-                    }
+                    "UPDATE products SET stock_quantity = ? WHERE id = ?", 
+                    [newQuantity, ans.ProductPick]
                 )
                 connection.end();
             }
